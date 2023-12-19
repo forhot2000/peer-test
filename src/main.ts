@@ -1,7 +1,7 @@
 import './style.css';
 
-import { DataConnection, Peer } from 'peerjs';
 import { customAlphabet } from 'nanoid';
+import { DataConnection, Peer } from 'peerjs';
 
 async function enableVConsole() {
   try {
@@ -24,7 +24,7 @@ function main() {
   const opts = {
     my: '',
     friend: '',
-    conn: {} as DataConnection,
+    conn: undefined as DataConnection | undefined,
   };
 
   const peer = new Peer(nanoid(), {
@@ -52,18 +52,21 @@ function main() {
     opts.conn = conn;
     conn.on('data', (data) => {
       console.log('receive: %O', data);
-      logMessage(data as string);
+      logMessage({ message: data as string, id: opts.friend });
     });
     conn.on('open', () => {
       conn.send('hi!');
     });
   });
 
-  function logMessage(message: string, isSend = false) {
+  function logMessage(opts: { message: string; id: string; isSend?: boolean }) {
+    const { message, id, isSend = false } = opts;
     const d = document.createElement('div');
-    d.innerText = message;
     if (isSend) {
       d.style.setProperty('text-align', 'right');
+      d.innerText = `${message} :${id}`;
+    } else {
+      d.innerText = `${id}: ${message}`;
     }
     historyEl.appendChild(d);
     historyEl.scrollTo({ top: d.scrollHeight });
@@ -81,22 +84,45 @@ function main() {
     opts.friend = friend;
     conn.on('data', (data) => {
       console.log('receive: %O', data);
-      logMessage(data as string);
+      logMessage({ message: data as string, id: opts.friend });
     });
     conn.on('open', () => {
       conn.send('hi!');
     });
   });
 
-  sendForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const message = messageEl.value.trim();
-    messageEl.value = '';
-    if (message) {
-      opts.conn.send(message);
-      logMessage(message, true);
+  messageEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!e.altKey && !e.ctrlKey) {
+        // press Enter key to send
+        send();
+      } else {
+        // insert newline when alt or ctrl key down
+        let p = messageEl.selectionStart;
+        messageEl.setRangeText('\n');
+        messageEl.setSelectionRange(p + 1, p + 1);
+      }
     }
   });
+
+  sendForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    send();
+  });
+
+  function send() {
+    if (opts.conn) {
+      const message = messageEl.value.trim();
+      messageEl.value = '';
+      if (message) {
+        opts.conn.send(message);
+        logMessage({ message, id: opts.my, isSend: true });
+      }
+    } else {
+      console.log('not connected.');
+    }
+  }
 }
 
 enableVConsole()

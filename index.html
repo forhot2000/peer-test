@@ -13,10 +13,12 @@
         width: 60%;
         height: 10em;
         padding: 10px;
+        box-sizing: border-box;
       }
       #message {
         width: 60%;
         height: 6em;
+        box-sizing: border-box;
       }
       #send {
         vertical-align: top;
@@ -32,7 +34,7 @@
         </label>
       </div>
       <div style="margin-top: 10px">
-        <form id="connect_form">
+        <form id="connect_form" autocomplete="off">
           <label>
             friend id:
             <input type="text" id="friend" />
@@ -42,7 +44,7 @@
       </div>
       <div id="history"></div>
       <div style="margin-top: 10px">
-        <form id="send_form">
+        <form id="send_form" autocomplete="off">
           <textarea id="message"></textarea>
           <button id="send" disabled>send</button>
         </form>
