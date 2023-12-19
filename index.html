@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@chatroom</title>
+
+    <style>
+      #history {
+        margin-top: 10px;
+        border: 1px solid #767676;
+        border-radius: 2px;
+        width: 60%;
+        height: 10em;
+        padding: 10px;
+      }
+      #message {
+        width: 60%;
+        height: 6em;
+      }
+      #send {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <label>
+          my id:
+          <span id="id">#</span>
+        </label>
+      </div>
+      <div style="margin-top: 10px">
+        <form id="connect_form">
+          <label>
+            friend id:
+            <input type="text" id="friend" />
+          </label>
+          <button id="connect">connect</button>
+        </form>
+      </div>
+      <div id="history"></div>
+      <div style="margin-top: 10px">
+        <form id="send_form">
+          <textarea id="message"></textarea>
+          <button id="send" disabled>send</button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
